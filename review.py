@@ -15,8 +15,10 @@ def get_merge_request_changes(project_id, merge_request_id):
     api_endpoint = f"{GITLAB_URL}/api/v4/projects/{project_id}/merge_requests/{merge_request_id}/changes"
 
     headers = {"Authorization": f"Bearer {GITLAB_PRIVATE_TOKEN}"}
-
-    response = requests.get(api_endpoint, headers=headers, proxies=proxies)
+    if GITLAB_PROXY:
+        response = requests.get(api_endpoint, headers=headers, proxies=proxies)
+    else:
+        response = requests.get(api_endpoint, headers=headers)
 
     if response.status_code == 200:
         changes = response.json()["changes"]
@@ -42,8 +44,12 @@ def post_merge_request_comment(project_id, merge_request_id, comment):
 
     headers = {"PRIVATE-TOKEN": GITLAB_PRIVATE_TOKEN}
     data = {"body": comment}
-
-    response = requests.post(api_endpoint, headers=headers, json=data, proxies=proxies)
+    if GITLAB_PROXY:
+        response = requests.post(
+            api_endpoint, headers=headers, json=data, proxies=proxies
+        )
+    else:
+        response = requests.get(api_endpoint, headers=headers)
     if response.status_code == 201:
         print("Comment posted successfully.")
     else:
