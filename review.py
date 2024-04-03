@@ -65,10 +65,7 @@ def main(prompt):
     merge_request_id = sys.argv[2]
     changes = get_merge_request_changes(project_id, merge_request_id)
     if changes:
-        if len(changes) > 3000:
-            review = "changes too long, please invite your teammates to review."
-        else:
-            review = review_code(prompt, changes)
+        review = review_code(prompt, changes)
         print("Review Results:")
         print(review)
         post_merge_request_comment(project_id, merge_request_id, review)
